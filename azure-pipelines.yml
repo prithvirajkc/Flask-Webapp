@@ -37,18 +37,20 @@ stages:
 #        containerRegistry: $(dockerRegistryServiceConnection)
 #        tags: |
 #          $(tag)
-    - task: WhiteSource@21
-      inputs:
-        cwd: '$(System.DefaultWorkingDirectory)'
-        projectName: 'DevOps'
-    - task: SonarCloudPrepare@1
-      inputs:
-        SonarCloud: 'Sonar-connection'
-        organization: 'azure-devops-proj'
-        scannerMode: 'MSBuild'
-        projectKey: 'Azure-DevOps'
-        projectName: 'Azure-DevOps'
-    - task: SonarCloudAnalyze@1
-    - task: SonarCloudPublish@1
-      inputs:
-        pollingTimeoutSec: '300'
+#    - task: WhiteSource@21
+#      inputs:
+#        cwd: '$(System.DefaultWorkingDirectory)'
+#        projectName: 'DevOps'
+     - task: SonarCloudPrepare@1
+       inputs:
+         SonarCloud: 'Sonar-connection'
+         organization: 'azure-devops-proj'
+         scannerMode: 'CLI'
+         configMode: 'manual'
+         cliProjectKey: 'Azure-DevOps'
+         cliProjectName: 'Azure-DevOps'
+         cliSources: '.'
+     - task: SonarCloudAnalyze@1
+     - task: SonarCloudPublish@1
+       inputs:
+         pollingTimeoutSec: '300'
