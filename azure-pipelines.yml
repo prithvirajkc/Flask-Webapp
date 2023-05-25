@@ -28,16 +28,27 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+#    - task: Docker@2
+#      displayName: Build and push an image to container registry
+#      inputs:
+#        command: buildAndPush
+##        repository: $(imageRepository)
+#        dockerfile: $(dockerfilePath)
+#        containerRegistry: $(dockerRegistryServiceConnection)
+#        tags: |
+#          $(tag)
     - task: WhiteSource@21
       inputs:
         cwd: '$(System.DefaultWorkingDirectory)'
         projectName: 'DevOps'
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'Sonar-connection'
+        organization: 'azure-devops-proj'
+        scannerMode: 'MSBuild'
+        projectKey: 'Azure-DevOps'
+        projectName: 'Azure-DevOps'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
