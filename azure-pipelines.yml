@@ -10,9 +10,9 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'bc717a61-8233-4000-8fd5-a5147d0cc1bc'
+  dockerRegistryServiceConnection: 'a6905e07-dc19-4d1a-a18c-6e4867f58f86'
   imageRepository: 'flaskwebapp'
-  containerRegistry: 'devopsacrq0khg.azurecr.io'
+  containerRegistry: 'devopsacr5c6ma.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
 
@@ -28,21 +28,21 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-#    - task: Docker@2
-#      displayName: Build and push an image to container registry
-#      inputs:
-#        command: buildAndPush
-##        repository: $(imageRepository)
-#        dockerfile: $(dockerfilePath)
-#        containerRegistry: $(dockerRegistryServiceConnection)
-#        tags: |
-#          $(tag)
-#    - task: WhiteSource@21
-#      inputs:
-#        cwd: '$(System.DefaultWorkingDirectory)'
-#        projectName: 'DevOps'
-     - task: SonarCloudPrepare@1
-       inputs:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+    - task: WhiteSource@21
+      inputs:
+        cwd: '$(System.DefaultWorkingDirectory)'
+        projectName: 'DevOps'
+    - task: SonarCloudPrepare@1
+      inputs:
          SonarCloud: 'Sonar-connection'
          organization: 'azure-devops-proj'
          scannerMode: 'CLI'
@@ -50,7 +50,7 @@ stages:
          cliProjectKey: 'Azure-DevOps'
          cliProjectName: 'Azure-DevOps'
          cliSources: '.'
-     - task: SonarCloudAnalyze@1
-     - task: SonarCloudPublish@1
-       inputs:
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
          pollingTimeoutSec: '300'
