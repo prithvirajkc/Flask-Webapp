@@ -20,23 +20,13 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: Build
-  displayName: Build and push stage
+- stage: Test and Scan
+  displayName: Test for vulnerabilities and code quality
   jobs:
-  - job: Build
-    displayName: Build
+  - job: Test_and_Scan 
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
     - task: WhiteSource@21
       inputs:
         cwd: '$(System.DefaultWorkingDirectory)'
@@ -54,3 +44,22 @@ stages:
     - task: SonarCloudPublish@1
       inputs:
          pollingTimeoutSec: '300'
+       
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+    
