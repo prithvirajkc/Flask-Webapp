@@ -20,7 +20,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: Test and Scan
+- stage: Test_and_Scan
   displayName: Test for vulnerabilities and code quality
   jobs:
   - job: Test_and_Scan 
