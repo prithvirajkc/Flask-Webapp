@@ -1,0 +1,56 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '5c348824-825f-4004-a841-5ccd8b0eb3cd'
+  imageRepository: 'flaskwebapp'
+  containerRegistry: 'devopsacr5c6ma.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+    - task: WhiteSource@21
+      inputs:
+        cwd: '$(System.DefaultWorkingDirectory)'
+        projectName: 'DevOps'
+    - task: SonarCloudPrepare@1
+      inputs:
+         SonarCloud: 'Sonar-connection'
+         organization: 'azure-devops-proj'
+         scannerMode: 'CLI'
+         configMode: 'manual'
+         cliProjectKey: 'Azure-DevOps'
+         cliProjectName: 'Azure-DevOps'
+         cliSources: '.'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+         pollingTimeoutSec: '300'
