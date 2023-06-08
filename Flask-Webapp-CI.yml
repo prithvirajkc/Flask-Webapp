@@ -15,7 +15,7 @@ variables:
   containerRegistry: 'devopsacrbavli.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
-  major: 2
+  major: 3
   minor: $[counter(variables['major'], 100)]
 
   # Agent VM image name
