@@ -22,31 +22,31 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-#- stage: Test_and_Scan
-#  displayName: Test for vulnerabilities and code quality
-#  jobs:
-#  - job: Test_and_Scan 
-#    pool:
-#      vmImage: $(vmImageName)
-#    steps:
-#    - task: WhiteSource@21
-#      inputs:
-#        cwd: '$(System.DefaultWorkingDirectory)'
-#        projectName: 'DevOps'
-#    - task: SonarCloudPrepare@1
-#      inputs:
-#         SonarCloud: 'Sonar-connection'
-#         organization: 'azure-devops-proj'
-#         scannerMode: 'CLI'
-#         configMode: 'manual'
-#         cliProjectKey: 'Azure-DevOps'
-#         cliProjectName: 'Azure-DevOps'
-#         cliSources: '.'
-#    - task: SonarCloudAnalyze@1
-#    - task: SonarCloudPublish@1
-#      inputs:
-#         pollingTimeoutSec: '300'
-       
+- stage: Test_and_Scan
+  displayName: Test for vulnerabilities and code quality
+  jobs:
+  - job: Test_and_Scan 
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: WhiteSource@21
+      inputs:
+        cwd: '$(System.DefaultWorkingDirectory)'
+        projectName: 'DevOps'
+    - task: SonarCloudPrepare@1
+      inputs:
+         SonarCloud: 'Sonar-connection'
+         organization: 'azure-devops-proj'
+         scannerMode: 'CLI'
+         configMode: 'manual'
+         cliProjectKey: 'Azure-DevOps'
+         cliProjectName: 'Azure-DevOps'
+         cliSources: '.'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+         pollingTimeoutSec: '300'
+      
 - stage: Build
   displayName: Build and push stage
   jobs:
